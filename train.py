@@ -92,11 +92,11 @@ def main():
     # lightning module
     profiler = build_profiler(args.profiler_name)
     model = PL_RMmodel(config, pretrained_ckpt=args.ckpt_path, profiler=profiler)
-    loguru_logger.info(f"LoFTR LightningModule initialized!")
+    loguru_logger.info(f"RMmodel LightningModule initialized!")
 
     # lightning data
     data_module = MultiSceneDataModule(args, config)
-    loguru_logger.info(f"LoFTR DataModule initialized!")
+    loguru_logger.info(f"RMmodel DataModule initialized!")
 
     # TensorBoard Logger
     logger = TensorBoardLogger(save_dir='logs/tb_logs', name=args.exp_name, default_hp_metric=False)
