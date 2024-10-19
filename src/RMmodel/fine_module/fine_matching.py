@@ -65,7 +65,7 @@ class FineMatching(nn.Module):
         # compute absolute kpt coords
         self.get_fine_match(coords_normalized, data)
 
-        return data['mkpts0_f'], data['mkpts0_f']
+        # return data['mkpts0_f'], data['mkpts0_f']
 
     @torch.no_grad()
     def get_fine_match(self, coords_normed, data):
@@ -73,8 +73,7 @@ class FineMatching(nn.Module):
 
         # mkpts0_f and mkpts1_f
         mkpts0_f = data['mkpts0_c']
-        scale1 = scale * data['scale1'][data['b_ids']] if 'scale0' in data else scale
-        mkpts1_f = data['mkpts1_c'] + (coords_normed * (W // 2) * scale1)[:len(data['mconf'])]
+        mkpts1_f = data['mkpts1_c'] + (coords_normed * (W // 2) * scale)[:len(data['mconf'])]
 
         data.update({
             "mkpts0_f": mkpts0_f,
