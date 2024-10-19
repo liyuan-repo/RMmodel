@@ -1,12 +1,3 @@
-#!/bin/bash -l
-
-
-TRAIN_IMG_SIZE=640
-# to reproduced the results in our paper, please use:
-# TRAIN_IMG_SIZE=840
-data_cfg_path="configs/data/megadepth_trainval_${TRAIN_IMG_SIZE}.py"
-main_cfg_path="configs/model/RMtrainer.py"
-
 configs/data/megadepth_trainval_640.py
 configs/model/outdoor/RMtrainer.py
 --exp_name
