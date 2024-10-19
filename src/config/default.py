@@ -81,7 +81,13 @@ _CN.RMmodel.LOSS.FINE_WEIGHT = 1.0
 _CN.RMmodel.LOSS.FINE_CORRECT_THR = 1.0
 # for filtering valid fine-level gts (some gt matches might fall out of the fine-level window)
 
+# -- essential matrix regression loss
+_CN.RMmodel.LOSS.ESSENTIAL_WEIGHT = 0.1
+_CN.RMmodel.LOSS.GEO_LOSS_MARGIN = 0.03
 
+# -- classification loss
+_CN.RMmodel.LOSS.OBJ_GEOD_TH = 1e-4
+_CN.RMmodel.LOSS.CLASSIF_WEIGHT = 0.5
 
 
 # ------------------------------- Dataset ----------------------------------
