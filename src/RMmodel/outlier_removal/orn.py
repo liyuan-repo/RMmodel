@@ -1,9 +1,22 @@
 import torch
 import torch.nn as nn
 import numpy as np
-from loss import batch_episym
+# from loss import batch_episym
 from collections import namedtuple
 
+
+def batch_episym(x1, x2, F):
+    batch_size, num_pts = x1.shape[0], x1.shape[1]
+    x1 = torch.cat([x1, x1.new_ones(batch_size, num_pts, 1)], dim=-1).reshape(batch_size, num_pts, 3, 1)
+    x2 = torch.cat([x2, x2.new_ones(batch_size, num_pts, 1)], dim=-1).reshape(batch_size, num_pts, 3, 1)
+    F = F.reshape(-1, 1, 3, 3).repeat(1, num_pts, 1, 1)
+    x2Fx1 = torch.matmul(x2.transpose(2, 3), torch.matmul(F, x1)).reshape(batch_size, num_pts)
+    Fx1 = torch.matmul(F, x1).reshape(batch_size, num_pts, 3)
+    Ftx2 = torch.matmul(F.transpose(2, 3), x2).reshape(batch_size, num_pts, 3)
+    ys = x2Fx1 ** 2 * (
+            1.0 / (Fx1[:, :, 0] ** 2 + Fx1[:, :, 1] ** 2 + 1e-15) +
+            1.0 / (Ftx2[:, :, 0] ** 2 + Ftx2[:, :, 1] ** 2 + 1e-15))
+    return ys
 
 class PointCN(nn.Module):
     def __init__(self, channels, out_channels=None):
@@ -337,6 +350,7 @@ class Outlier_Removal(nn.Module):
         self.nn_matcher = NNMatcher()
 
     def forward(self, kpt_list, desc_list, batch):
+        # kpts = {ndarray:(2000,2)}
         nkpts = [normalize_kpts(i) for i in kpt_list]                                       # nkpts:{list2}
         # descs = [torch.from_numpy(desc.astype(np.float32)).cuda() for desc in desc_list]  # descs:{list2}
         corr, sides, corr_idx = self.nn_matcher.run(nkpts, desc_list)
@@ -375,7 +389,9 @@ class Outlier_Removal(nn.Module):
 
         batch.update({
             "mkpts0_orn": corr0,
-            "mkpts1_orn": corr1
+            "mkpts1_orn": corr1,
+            "y_hat": y_hat,
+            "e_hat": e_hat
         })
 
         # return matches, corr0, corr1
